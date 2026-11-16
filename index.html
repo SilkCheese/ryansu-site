@@ -33,7 +33,7 @@ dialog::backdrop{background:#123f4c38;backdrop-filter:blur(7px)}
 <main id="pond" aria-label="Interactive 3D pond. Select a frog or use the section buttons below.">
 <p id="status" role="status">Loading…</p>
 </main>
-<div class="toolbar"><button class="utility" id="sound" aria-label="Enable rain sound" title="Enable rain sound" aria-pressed="false"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4Z"/><path d="m16 9 5 6m0-6-5 6"/></svg></button><button class="utility" id="motion" aria-label="Pause pond animation" title="Pause animation" hidden>Ⅱ</button><button class="utility" id="reset" aria-label="Reset pond view" title="Reset view" hidden>↺</button><button class="utility" id="credits" aria-label="Sky footage credit" title="Sky footage credit">i</button></div>
+<div class="toolbar"><button class="utility" id="sound" aria-label="Enable water sounds" title="Enable water sounds" aria-pressed="false"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4Z"/><path d="m16 9 5 6m0-6-5 6"/></svg></button><button class="utility" id="motion" aria-label="Pause pond animation" title="Pause animation" hidden>Ⅱ</button><button class="utility" id="reset" aria-label="Reset pond view" title="Reset view" hidden>↺</button><button class="utility" id="credits" aria-label="Media credits" title="Media credits">i</button></div>
 <footer><nav aria-label="Explore sections"></nav></footer>
 <dialog id="section-dialog" aria-labelledby="section-title"><div class="modal-head"><button class="close" aria-label="Close section">×</button></div><div class="modal-body"></div></dialog>
 <noscript><style>#pond,.toolbar,footer{display:none}header{position:static;margin:30px}body{overflow:auto;background:#fff}#nojs{max-width:720px;margin:30px;line-height:1.7}</style><div id="nojs"><section>
@@ -112,7 +112,7 @@ names.forEach((name,i)=>{
 });
 document.querySelector('#credits').addEventListener('click',()=>{
   returnFocus=document.querySelector('#credits');
-  modalBody.innerHTML='<h2 id="section-title">Sky footage</h2><p><a href="https://commons.wikimedia.org/wiki/File:Clouds_time_lapse.webm">Clouds time lapse</a> by <a href="https://www.flickr.com/people/snowpeak/">John Fowler</a>, <a href="https://creativecommons.org/licenses/by/2.0/">CC BY 2.0</a>. Slowed, looped, and mapped onto the sky and water.</p>';
+  modalBody.innerHTML='<h2 id="section-title">Media credits</h2><p><a href="https://commons.wikimedia.org/wiki/File:Clouds_time_lapse.webm">Clouds time lapse</a> by <a href="https://www.flickr.com/people/snowpeak/">John Fowler</a>, <a href="https://creativecommons.org/licenses/by/2.0/">CC BY 2.0</a>. Slowed, looped, and mapped onto the sky and water.</p><p><a href="https://sfxmint.com/sounds/water-drip-75">Single Water Drip 75</a> by SFXMint, <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>. Played quietly at intervals.</p>';
   dialog.showModal();dialog.scrollTop=0;
 });
 window.pondUI = {openSection,names,colors,dialog};
@@ -133,88 +133,80 @@ window.pondFailed=()=>{
 (() => {
   const button=document.querySelector('#sound');
   const iconOn="<svg width=\"17\" height=\"17\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M11 5 6 9H3v6h3l5 4Z\"/><path d=\"M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14\"/></svg>",iconOff="<svg width=\"17\" height=\"17\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M11 5 6 9H3v6h3l5 4Z\"/><path d=\"m16 9 5 6m0-6-5 6\"/></svg>";
-  let desired=true,context=null,master=null,source=null,activated=false;
+  let desired=true,activated=false,player=null,timer=null,failed=false,request=0;
   try{desired=localStorage.getItem('ryansu-rain-sound')!=='off';}catch{}
-  const AudioEngine=window.AudioContext||window.webkitAudioContext;
   function updateButton(){
-    const audible=desired&&activated&&context?.state==='running'&&!document.hidden;
-    button.innerHTML=audible?iconOn:iconOff;
-    button.setAttribute('aria-pressed',String(audible));
-    button.setAttribute('aria-label',audible?'Mute rain sound':'Enable rain sound');
-    button.title=audible?'Mute rain sound':'Enable rain sound';
+    const enabled=desired&&activated&&!failed;
+    button.innerHTML=enabled?iconOn:iconOff;
+    button.setAttribute('aria-pressed',String(enabled));
+    const label=failed?'Retry water sounds':enabled?'Mute water sounds':'Enable water sounds';
+    button.setAttribute('aria-label',label);button.title=label;
   }
-  // Generate a quiet stereo rain bed and scattered soft water taps locally.
-  function buildAudio(){
-    context=new AudioEngine();
-    const rate=context.sampleRate,duration=16,frames=Math.floor(rate*duration);
-    const buffer=context.createBuffer(2,frames,rate);
-    for(let channel=0;channel<2;channel++){
-      const data=buffer.getChannelData(channel);
-      let smooth=0;
-      for(let i=0;i<frames;i++){
-        const white=Math.random()*2-1;
-        smooth=.965*smooth+.035*white;
-        const t=i/rate;
-        const swell=.84+.08*Math.sin(2*Math.PI*t/duration)+.04*Math.sin(6*Math.PI*t/duration+channel);
-        data[i]=(white*.13+smooth*.7)*swell;
-      }
-      // Soft, short splashes with varied pitches and spacing.
-      for(let d=0;d<105;d++){
-        const start=Math.floor(Math.random()*frames),length=Math.floor(rate*(.025+Math.random()*.04));
-        const frequency=850+Math.random()*1700,level=.035+Math.random()*.065;
-        for(let j=0;j<length;j++){
-          const t=j/rate;
-          const envelope=Math.min(t/.003,1)*Math.exp(-t*85);
-          data[(start+j)%frames]+=level*envelope*(Math.sin(2*Math.PI*frequency*t)*.35+(Math.random()*2-1)*.65);
-        }
-      }
-      // Brief seam fades prevent a click without a noticeable gap.
-      const fade=Math.floor(rate*.008);
-      for(let i=0;i<fade;i++){data[i]*=i/fade;data[frames-1-i]*=i/fade;}
-    }
-    source=context.createBufferSource();source.buffer=buffer;source.loop=true;
-    const highpass=context.createBiquadFilter();highpass.type='highpass';highpass.frequency.value=350;
-    const lowpass=context.createBiquadFilter();lowpass.type='lowpass';lowpass.frequency.value=6200;lowpass.Q.value=.5;
-    master=context.createGain();master.gain.value=0;
-    source.connect(highpass);highpass.connect(lowpass);lowpass.connect(master);master.connect(context.destination);
-    source.start();
-    context.addEventListener('statechange',updateButton);
+  function stopDrops(){
+    clearTimeout(timer);timer=null;request++;
+    if(player)player.pause();
   }
-  async function syncAudio(){
+  function getPlayer(){
+    if(player)return player;
+    player=document.createElement('audio');
+    player.preload='auto';
+    // Single Water Drip 75, SFXMint, CC0. Hotlinking is explicitly permitted.
+    player.src='https://sfxmint.com/dl/water-drip-75.mp3';
+    player.loop=false;
+    player.addEventListener('ended',()=>{
+      if(!desired||!activated||document.hidden||failed)return;
+      clearTimeout(timer);
+      timer=setTimeout(()=>{timer=null;void playDrop();},900+Math.random()*1600);
+    });
+    player.addEventListener('error',()=>{
+      failed=true;activated=false;stopDrops();updateButton();
+    });
+    return player;
+  }
+  async function playDrop(){
+    if(!desired||!activated||document.hidden)return;
+    const current=++request;
     try{
-      if(!context&&desired)buildAudio();
-      if(!context)return;
-      if(desired&&!document.hidden)await context.resume();
-      const volume=(desired&&!document.hidden) ? .34 : 0;
-      master.gain.cancelScheduledValues(context.currentTime);
-      master.gain.setTargetAtTime(volume,context.currentTime,.08);
-      if(document.hidden)await context.suspend();
+      const sound=getPlayer();
+      sound.volume=.28+Math.random()*.10;
+      sound.playbackRate=.92+Math.random()*.16;
+      sound.currentTime=0;
+      await sound.play();
+      if(current!==request)return;
+      if(!desired||document.hidden){sound.pause();return;}
+      failed=false;updateButton();
     }catch{
-      desired=false;
-      if(master&&context)master.gain.setTargetAtTime(0,context.currentTime,.04);
+      if(current!==request)return;
+      activated=false;failed=true;stopDrops();updateButton();
     }
-    updateButton();
+  }
+  function startDrops(){
+    stopDrops();
+    if(failed&&player){player.load();failed=false;}
+    activated=true;updateButton();void playDrop();
   }
   button.addEventListener('click',()=>{
-    const audible=desired&&activated&&context?.state==='running';
-    desired=!audible;activated=true;
+    if(desired&&activated&&!failed){
+      desired=false;stopDrops();
+    }else{
+      desired=true;startDrops();
+    }
     try{localStorage.setItem('ryansu-rain-sound',desired?'on':'off');}catch{}
-    void syncAudio();
+    updateButton();
   });
   function firstInteraction(event){
-    if(activated||!desired||button.contains(event.target))return;
+    if(activated||failed||!desired||button.contains(event.target))return;
     if(event.type==='keydown'&&!['Enter',' '].includes(event.key))return;
-    activated=true;void syncAudio();
+    startDrops();
   }
-  if(AudioEngine){
-    document.addEventListener('pointerdown',firstInteraction,{passive:true});
-    document.addEventListener('keydown',firstInteraction);
-    document.addEventListener('visibilitychange',()=>{if(activated)void syncAudio();});
+  document.addEventListener('pointerdown',firstInteraction,{passive:true});
+  document.addEventListener('keydown',firstInteraction);
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden)stopDrops();
+    else if(desired&&activated&&!failed)void playDrop();
     updateButton();
-  }else{
-    button.disabled=true;button.title='Rain sound is unavailable in this browser';
-    button.setAttribute('aria-label',button.title);
-  }
+  });
+  updateButton();
 })();
 </script>
 
