@@ -113,7 +113,7 @@ names.forEach((name,i)=>{
 });
 document.querySelector('#credits').addEventListener('click',()=>{
   returnFocus=document.querySelector('#credits');
-  modalBody.innerHTML='<h2 id="section-title">Media credits</h2><p><a href="https://commons.wikimedia.org/wiki/File:Clouds_time_lapse.webm">Clouds time lapse</a> by <a href="https://www.flickr.com/people/snowpeak/">John Fowler</a>, <a href="https://creativecommons.org/licenses/by/2.0/">CC BY 2.0</a>. Slowed, looped, and mapped onto the sky and water.</p><p><a href="https://sfxmint.com/sounds/water-drip-75">Single Water Drip 75</a> by SFXMint, <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>. Played softly with varied timing and pitch.</p>';
+  modalBody.innerHTML='<h2 id="section-title">Media credits</h2><p><a href="https://commons.wikimedia.org/wiki/File:Clouds_time_lapse.webm">Clouds time lapse</a> by <a href="https://www.flickr.com/people/snowpeak/">John Fowler</a>, <a href="https://creativecommons.org/licenses/by/2.0/">CC BY 2.0</a>. Slowed, looped, and mapped onto the sky and water.</p><p><a href="https://commons.wikimedia.org/wiki/File:Sound_of_light_rainfall.ogg">Sound of light rainfall</a> by <a href="https://commons.wikimedia.org/wiki/User:Mijesty">Mijesty</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>. Original recording looped at reduced playback volume.</p>';
   dialog.showModal();dialog.scrollTop=0;
 });
 window.pondUI = {openSection,selectSection:openSection,names,colors,dialog};
@@ -134,8 +134,8 @@ window.pondFailed=()=>{
 (() => {
   const button=document.querySelector('#sound');
   const iconOn="<svg width=\"17\" height=\"17\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M11 5 6 9H3v6h3l5 4Z\"/><path d=\"M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14\"/></svg>",iconOff="<svg width=\"17\" height=\"17\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M11 5 6 9H3v6h3l5 4Z\"/><path d=\"m16 9 5 6m0-6-5 6\"/></svg>";
-  let desired=true,activated=false,timer=null,failed=false,request=0;
-  const players=[];
+  let desired=true,activated=false,failed=false,request=0;
+  let rain=null;
   let croakContext=null,croakTimer=null,lastCroak=-Infinity;
   const croakVoices=new Set();
   function unlockCroaks(){
@@ -181,69 +181,51 @@ window.pondFailed=()=>{
     const label=failed?'Retry pond sounds':enabled?'Mute pond sounds':'Enable pond sounds';
     button.setAttribute('aria-label',label);button.title=label;
   }
-  function stopDrops(){
-    clearTimeout(timer);timer=null;request++;
-    players.forEach(sound=>sound.pause());
+  function stopRain(){
+    request++;
+    if(rain)rain.pause();
     clearTimeout(croakTimer);croakTimer=null;
     croakVoices.forEach(({gain})=>{if(croakContext){gain.gain.cancelScheduledValues(croakContext.currentTime);gain.gain.setTargetAtTime(0,croakContext.currentTime,.01);}});
 
   }
   function failAudio(){
-    failed=true;activated=false;stopDrops();updateButton();
+    failed=true;activated=false;stopRain();updateButton();
   }
-  function getPlayers(){
-    if(players.length)return players;
-    // A small pool allows soft drops to overlap without cutting off their tails.
-    for(let i=0;i<6;i++){
-      const sound=document.createElement('audio');
-      sound.preload='auto';
-      // Single Water Drip 75, SFXMint, CC0.
-      sound.src='https://sfxmint.com/dl/water-drip-75.mp3';
-      sound.loop=false;sound.preservesPitch=false;
-      sound.addEventListener('error',failAudio);
-      players.push(sound);
-    }
-    return players;
+  function getRain(){
+    if(rain)return rain;
+    rain=document.createElement('audio');
+    rain.preload='auto';
+    // Sound of light rainfall by Mijesty, CC BY-SA 4.0.
+    rain.src='https://upload.wikimedia.org/wikipedia/commons/1/15/Sound_of_light_rainfall.ogg';
+    rain.loop=true;
+    rain.volume=.22;
+    rain.addEventListener('error',failAudio);
+    return rain;
   }
-  function playDrop(){
-    if(!desired||!activated||document.hidden||failed)return;
-    const current=request;
-    const sound=players.find(audio=>audio.paused||audio.ended);
-    if(sound){
-      // Much quieter individual drops; modest pitch and timing variation.
-      sound.volume=.045+Math.random()*.04;
-      sound.playbackRate=.95+Math.random()*.30;
-      sound.currentTime=0;
-      sound.play().catch(()=>{if(current===request)failAudio();});
-    }
-    timer=setTimeout(()=>{timer=null;playDrop();},140+Math.random()*120);
-  }
-  async function startDrops(){
-    stopDrops();
+  async function startRain(){
+    stopRain();
     const current=request;
     unlockCroaks();
-    activated=true;updateButton();
+    activated=true;
+    const retry=failed;
+    failed=false;
+    updateButton();
     try{
-      const pool=getPlayers();
-      if(failed){pool.forEach(sound=>sound.load());failed=false;}
-      // Unlock every voice in the initiating click/tap for mobile browsers.
-      await Promise.all(pool.map(sound=>{
-        sound.volume=0;sound.currentTime=0;
-        return sound.play();
-      }));
+      const sound=getRain();
+      if(retry)sound.load();
+      await sound.play();
       if(current!==request)return;
-      pool.forEach(sound=>sound.pause());
-      if(!desired||document.hidden)return;
-      failed=false;updateButton();playDrop();scheduleCroak();
+      if(!desired||document.hidden){sound.pause();return;}
+      updateButton();scheduleCroak();
     }catch{
       if(current===request)failAudio();
     }
   }
   button.addEventListener('click',()=>{
     if(desired&&activated&&!failed){
-      desired=false;stopDrops();
+      desired=false;stopRain();
     }else{
-      desired=true;void startDrops();
+      desired=true;void startRain();
     }
     try{localStorage.setItem('ryansu-rain-sound',desired?'on':'off');}catch{}
     updateButton();
@@ -251,13 +233,13 @@ window.pondFailed=()=>{
   function firstInteraction(event){
     if(activated||failed||!desired||button.contains(event.target))return;
     if(event.type==='keydown'&&!['Enter',' '].includes(event.key))return;
-    void startDrops();
+    void startRain();
   }
   document.addEventListener('pointerdown',firstInteraction,{passive:true});
   document.addEventListener('keydown',firstInteraction);
   document.addEventListener('visibilitychange',()=>{
-    if(document.hidden)stopDrops();
-    else if(desired&&activated&&!failed)void startDrops();
+    if(document.hidden)stopRain();
+    else if(desired&&activated&&!failed)void startRain();
     updateButton();
   });
   updateButton();
