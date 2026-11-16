@@ -4,54 +4,39 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#ffffff">
-<meta name="description" content="Ryan Su — student, runner, debater, and musician. Explore a little pond to get to know me.">
-<title>Ryan Su — A little pond</title>
+<meta name="description" content="Ryan Su — student, runner, debater, and musician.">
+<title>Ryan Su</title>
 <style>
-:root{font-family:Arial,Helvetica,sans-serif;color:#203b3d;background:#fff;font-synthesis:none}
-*{box-sizing:border-box}body{margin:0}button,a{-webkit-tap-highlight-color:transparent}button{font:inherit;color:inherit;cursor:pointer}button:focus-visible,a:focus-visible{outline:3px solid #255baf;outline-offset:5px}button{touch-action:manipulation}
-header{position:absolute;z-index:3;top:36px;left:5vw;pointer-events:none}
-.eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:#758582;margin:0 0 12px}
-h1{font-weight:500;letter-spacing:-2px;font-size:46px;margin:0 0 8px}.subtitle{font-size:13px;color:#6e7e7d;margin:0;line-height:1.6}
-.corner{position:absolute;right:5vw;top:41px;font-size:11px;letter-spacing:.05em;color:#788883;display:flex;align-items:center;gap:9px}.corner i{width:7px;height:7px;border-radius:50%;background:#81a965}
-#pond{position:absolute;inset:145px 0 100px;isolation:isolate}
-canvas{display:block;width:100%;height:100%;touch-action:none;outline:none}
-#labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
-.frog-label{position:absolute;top:0;left:0;pointer-events:auto;border:1px solid #ffffffaa;background:#fffffff0;box-shadow:0 3px 14px #1d697514;border-radius:24px;padding:10px 15px;white-space:nowrap;font-size:11px;font-weight:600;letter-spacing:.025em;transition:background .15s,box-shadow .15s;display:flex;gap:8px;align-items:center}
-.frog-label:hover,.frog-label[data-active="true"]{background:#fff;box-shadow:0 5px 20px #194e702b}
-.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--color);flex:none}
-#status{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:13px;line-height:1.8;color:#597477;text-align:center;width:80%;pointer-events:none}
-#status[hidden]{display:none}
-.toolbar{position:absolute;z-index:4;bottom:100px;right:5vw;display:flex;gap:8px}
-.utility{border:1px solid #e5ebea;border-radius:50%;height:38px;width:38px;background:#ffffffed;display:grid;place-items:center;font-size:18px}
-.utility:hover{background:#f0f5f3}.utility[hidden]{display:none}
-footer{position:absolute;bottom:24px;left:5vw;right:5vw;display:flex;align-items:center;justify-content:space-between;gap:20px}
-.hint{font-size:12px;color:#7b8b88;line-height:1.8;margin:0}.hint strong{font-weight:500;color:#375554}
-nav{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
-nav button{background:transparent;border:1px solid transparent;border-radius:20px;padding:9px 11px;font-size:11px;display:flex;gap:7px;align-items:center}
-nav button:hover{border-color:#dce5e1;background:#f8faf8}
-dialog{width:min(620px,calc(100vw - 32px));max-height: min(80dvh,800px);border:1px solid #e4eae5;border-radius:22px;padding:0;color:#263d3a;box-shadow:0 30px 100px #0c353633;overscroll-behavior:contain}
+:root{font-family:Arial,Helvetica,sans-serif;color:#203b3d;background:#67bede;font-synthesis:none}
+*{box-sizing:border-box}body{margin:0;overflow:hidden}button,a{-webkit-tap-highlight-color:transparent}button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}button:focus-visible,a:focus-visible{outline:3px solid #255baf;outline-offset:5px}
+header{position:fixed;z-index:3;top:28px;left:32px;pointer-events:none}h1{font-weight:500;letter-spacing:-1.5px;font-size:36px;margin:0}
+#pond{position:fixed;inset:0;isolation:isolate}canvas{display:block;width:100%;height:100%;touch-action:none;outline:none}
+#status{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:13px;line-height:1.8;color:#203b3d;text-align:center;pointer-events:none}#status[hidden]{display:none}
+.toolbar{position:fixed;z-index:4;bottom:24px;right:24px;display:flex;gap:8px}.utility{border:1px solid #ffffff66;border-radius:50%;height:34px;width:34px;background:#ffffff99;display:grid;place-items:center;font-size:17px}.utility:hover{background:#fff}.utility[hidden]{display:none}
+footer{position:fixed;z-index:4;bottom:24px;left:24px}
+nav{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+nav:focus-within,body.fallback nav{position:relative;width:auto;height:auto;margin:0;clip-path:none;white-space:normal;display:flex;gap:6px;flex-wrap:wrap;background:#ffffffed;padding:8px;border-radius:12px}
+nav button{background:transparent;border:0;border-radius:16px;padding:9px 11px;font-size:12px}
+nav button:hover{background:#eaf1ed}
+dialog{width:min(620px,calc(100vw - 32px));max-height:min(80dvh,800px);border:1px solid #e4eae5;border-radius:18px;padding:0;color:#263d3a;box-shadow:0 30px 100px #0c353633;overscroll-behavior:contain}
 dialog::backdrop{background:#123f4c38;backdrop-filter:blur(7px)}
-.modal-head{position:sticky;top:0;background:#fffffff5;z-index:2;padding:25px 30px 20px;border-bottom:1px solid #ecf0ec;display:flex;justify-content:space-between;align-items:center;gap:20px}
-.modal-head p{margin:0;font-size:10px;letter-spacing:.16em;text-transform:uppercase;display:flex;align-items:center;gap:9px;color:#77847a}
-.close{border:1px solid #e4e9e3;background:#f8faf7;border-radius:50%;width:34px;height:34px;font-size:22px;line-height:1;flex:none}
-.modal-body{padding:8px 30px 30px;font-size:14px;line-height:1.85}.modal-body h2{font-size:32px;font-weight:500;letter-spacing:-1px;margin:18px 0 22px}.modal-body h3{font-size:15px;font-weight:600;margin:27px 0 12px}.modal-body ul{padding-left:19px}.modal-body li{padding-left:3px;margin:12px 0}.modal-body a{color:#277566;text-underline-offset:4px;text-decoration-thickness:1px}.result{padding:15px 0;border-bottom:1px solid #edf0eb}.result:last-child{border:0}
-.modal-foot{padding:0 30px 24px;font-size:10px;color:#879088;letter-spacing:.06em}
-@media(max-width:600px){header{top:25px;left:24px}h1{font-size:36px}.eyebrow{font-size:9px;margin-bottom:9px}.subtitle{font-size:11px}.corner{right:24px;top:30px;font-size:9px}.corner span{display:none}#pond{inset:125px 0 142px}footer{bottom:18px;left:20px;right:20px;flex-direction:column;gap:12px;text-align:center}.hint{font-size:11px}.hint br{display:none}nav{justify-content:center;gap:0}nav button{padding:9px 8px;font-size:10px}.toolbar{right:20px;bottom:142px}.frog-label{font-size:10px;padding:8px 10px;gap:6px}.modal-head{padding:18px 22px}.modal-body{padding:6px 22px 22px}.modal-body h2{font-size:28px}.modal-foot{padding-left:22px}}
-@media(max-height:540px) and (min-width:601px){header{top:15px}h1{font-size:30px}.eyebrow{display:none}#pond{inset:82px 0 70px}footer{bottom:12px}.toolbar{bottom:75px}}
+.modal-head{position:sticky;top:0;z-index:2;height:0;display:flex;justify-content:flex-end;padding:16px 16px 0;pointer-events:none}
+.close{border:1px solid #e4e9e3;background:#f8faf7;border-radius:50%;width:34px;height:34px;font-size:22px;line-height:1;flex:none;pointer-events:auto}
+.modal-body{padding:16px 30px 30px;font-size:14px;line-height:1.85}.modal-body h2{font-size:32px;font-weight:500;letter-spacing:-1px;margin:12px 40px 22px 0}.modal-body h3{font-size:15px;font-weight:600;margin:27px 0 12px}.modal-body ul{padding-left:19px}.modal-body li{padding-left:3px;margin:12px 0}.modal-body a{color:#277566;text-underline-offset:4px;text-decoration-thickness:1px}.result{padding:15px 0;border-bottom:1px solid #edf0eb}.result:last-child{border:0}
+@media(max-width:600px){header{top:24px;left:24px}h1{font-size:30px}.toolbar{right:18px;bottom:18px}footer{left:16px;right:100px;bottom:16px}.modal-body{padding:12px 22px 22px}.modal-body h2{font-size:28px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.1/examples/jsm/"}}</script>
 </head>
 <body>
-<header><p class="eyebrow">Welcome to my little corner</p><h1>Ryan Su</h1><p class="subtitle">Student · Runner · Debater · Musician</p></header>
-<div class="corner"><i></i><span>A LITTLE POND / FOUR STORIES</span></div>
+<header><h1>Ryan Su</h1></header>
 <main id="pond" aria-label="Interactive 3D pond. Select a frog or use the section buttons below.">
-<div id="labels"></div><p id="status" role="status">A little pond is coming to life…</p>
+<p id="status" role="status">Loading…</p>
 </main>
 <div class="toolbar"><button class="utility" id="motion" aria-label="Pause pond animation" title="Pause animation" hidden>Ⅱ</button><button class="utility" id="reset" aria-label="Reset pond view" title="Reset view" hidden>↺</button></div>
-<footer><p class="hint"><strong>Pick a frog. Get to know me.</strong><br> Drag to look around · Scroll or pinch to zoom</p><nav aria-label="Explore sections"></nav></footer>
-<dialog id="section-dialog" aria-labelledby="section-title"><div class="modal-head"><p><span class="dot" id="modal-dot"></span>Notes from the pond</p><button class="close" aria-label="Close section">×</button></div><div class="modal-body"></div><div class="modal-foot">RYAN SU / A LITTLE MORE ABOUT ME</div></dialog>
-<noscript><style>#pond,.toolbar,footer{display:none}header{position:static;margin:30px}#nojs{max-width:720px;margin:30px;line-height:1.7}</style><div id="nojs"><section>
+<footer><nav aria-label="Explore sections"></nav></footer>
+<dialog id="section-dialog" aria-labelledby="section-title"><div class="modal-head"><button class="close" aria-label="Close section">×</button></div><div class="modal-body"></div></dialog>
+<noscript><style>#pond,.toolbar,footer{display:none}header{position:static;margin:30px}body{overflow:auto;background:#fff}#nojs{max-width:720px;margin:30px;line-height:1.7}</style><div id="nojs"><section>
     <h2>Hobbies</h2>
     <ul>
       <li>Piano</li>
@@ -109,7 +94,6 @@ function openSection(index, source) {
   returnFocus = source || document.querySelector('nav button[data-index="'+index+'"]');
   modalBody.innerHTML = sections[index];
   modalBody.querySelector('h2').id = 'section-title';
-  document.querySelector('#modal-dot').style.setProperty('--color',colors[index]);
   if (!dialog.open) dialog.showModal();
   dialog.scrollTop = 0;
 }
@@ -122,28 +106,27 @@ dialog.addEventListener('close',()=>{if(returnFocus) returnFocus.focus({preventS
 names.forEach((name,i)=>{
   const b=document.createElement('button');
   b.type='button';b.dataset.index=i;b.setAttribute('aria-haspopup','dialog');
-  const dot=document.createElement('span');dot.className='dot';dot.style.setProperty('--color',colors[i]);
-  b.append(dot,document.createTextNode(name));
+  b.textContent=name;
   b.addEventListener('click',()=>openSection(i,b));
   document.querySelector('nav').append(b);
 });
 window.pondUI = {openSection,names,colors,dialog};
 const loadingTimeout=setTimeout(()=>{
   const status=document.querySelector('#status');
-  if(!status.hidden) status.textContent='The pond is taking a little longer. You can open every section below.';
+  if(!status.hidden) {status.textContent='Still loading…';document.body.classList.add('fallback');}
 },12000);
-window.pondReady=()=>{clearTimeout(loadingTimeout);document.querySelector('#status').hidden=true;};
+window.pondReady=()=>{clearTimeout(loadingTimeout);document.querySelector('#status').hidden=true;document.body.classList.remove('fallback');};
 window.pondFailed=()=>{
   clearTimeout(loadingTimeout);
   const s=document.querySelector('#status');s.hidden=false;
-  s.textContent='The 3D pond couldn’t load on this browser. Explore all four sections using the buttons below.';
-  document.querySelector('#labels').replaceChildren();
+  s.textContent='3D unavailable.';
+  document.body.classList.add('fallback');
 };
 </script>
 <script type="module">
 try {
   const [THREE, {OrbitControls}] = await Promise.all([import('three'),import('three/addons/controls/OrbitControls.js')]);
-  const host=document.querySelector('#pond'), labels=document.querySelector('#labels');
+  const host=document.querySelector('#pond');
   const {openSection,names,colors,dialog}=window.pondUI;
   const renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});
   renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
@@ -155,14 +138,15 @@ try {
   renderer.domElement.setAttribute('aria-hidden','true');
   const scene=new THREE.Scene();
   scene.background=new THREE.Color(0xffffff);
-  const camera=new THREE.OrthographicCamera(-12,12,9,-9,.1,120);
-  camera.position.set(0,13,17);
+  scene.fog=new THREE.Fog(0xffffff,100,350);
+  const camera=new THREE.PerspectiveCamera(42,1,.1,1500);
+  camera.position.set(0,12.65,19);
   const controls=new OrbitControls(camera,renderer.domElement);
-  controls.target.set(0,0,0);
+  controls.target.set(0,.65,0);
   controls.enableDamping=true;controls.dampingFactor=.07;
   controls.enablePan=false;
-  controls.minPolarAngle=.35;controls.maxPolarAngle=1.18;
-  controls.minZoom=.7;controls.maxZoom=1.7;
+  controls.minPolarAngle=.2;controls.maxPolarAngle=Math.PI/2;
+  controls.minDistance=10;controls.maxDistance=65;
   controls.rotateSpeed=.55;
   controls.update();controls.saveState();
   scene.add(new THREE.HemisphereLight(0xffffff,0xb1d4dc,2.5));
@@ -174,16 +158,14 @@ try {
   scene.add(sun);
   const mat=(color)=>new THREE.MeshStandardMaterial({color,roughness:.88,flatShading:true});
   const waterMaterial=new THREE.MeshStandardMaterial({color:0x67bede,roughness:.38,metalness:.04,flatShading:true});
-  const basin=new THREE.Mesh(new THREE.BoxGeometry(20,.35,16),mat(0x64b3d4));
-  basin.position.y=-.27;scene.add(basin);
-  const waterGeo=new THREE.PlaneGeometry(20,16,50,40);
+  const waterGeo=new THREE.PlaneGeometry(2000,2000);
   waterGeo.rotateX(-Math.PI/2);
   const water=new THREE.Mesh(waterGeo,waterMaterial);
   water.receiveShadow=true;scene.add(water);
-  const waterBase=Float32Array.from(waterGeo.attributes.position.array);
-  const green=mat(0x5f9c59),greenEdge=mat(0x4c8950),veinMat=new THREE.LineBasicMaterial({color:0x8abd6c,transparent:true,opacity:.7});
-  const white=mat(0xfffbea),black=mat(0x233836),blush=mat(0xec9a8c);
-  const faceted=new THREE.IcosahedronGeometry(1,1);
+  const green=mat(0x5f9c59),greenEdge=mat(0x4c8950);
+  const black=new THREE.MeshBasicMaterial({color:0x111111});
+  const faceted=new THREE.SphereGeometry(1,8,5);
+  const eyeGeometry=new THREE.SphereGeometry(1,12,8);
   function mesh(parent,material,pos,scale,geometry=faceted){
     const m=new THREE.Mesh(geometry,material);m.position.set(...pos);m.scale.set(...scale);
     m.castShadow=true;m.receiveShadow=true;parent.add(m);return m;
@@ -200,40 +182,18 @@ try {
     geometry.rotateX(-Math.PI/2);
     const pad=new THREE.Mesh(geometry,[green,greenEdge]);
     pad.rotation.y=turn;pad.receiveShadow=true;pad.castShadow=true;parent.add(pad);
-    const veins=new THREE.Group();veins.rotation.y=turn;
-    for(let i=0;i<6;i++){
-      const a=.6+i*.97;
-      const g=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,.08,0),new THREE.Vector3(Math.cos(a)*radius*.84,.08,-Math.sin(a)*radius*.84)]);
-      veins.add(new THREE.Line(g,veinMat));
-    }parent.add(veins);
   }
   function frog(parent,color,index){
     const f=new THREE.Group();f.position.y=.09;parent.add(f);
-    const skin=mat(color),light=mat(new THREE.Color(color).lerp(new THREE.Color(0xfff3c5),.4));
-    const dark=mat(new THREE.Color(color).multiplyScalar(.83));
-    mesh(f,skin,[0,.57,-.13],[.78,.57,.68]);
-    mesh(f,light,[0,.5,.37],[.55,.38,.22]);
-    mesh(f,skin,[0,.99,.32],[.89,.45,.57]);
-    // Wide folded hind legs and splayed front feet give each frog its squat silhouette.
+    const skin=mat(color);
+    mesh(f,skin,[0,.5,-.1],[.76,.5,.66]);
+    mesh(f,skin,[0,.88,.25],[.85,.43,.53]);
     for(const side of [-1,1]){
-      const leg=mesh(f,dark,[side*.77,.31,-.23],[.43,.34,.58]);leg.rotation.y=side*.3;
-      mesh(f,skin,[side*.86,.14,.15],[.39,.13,.4]);
-      const arm=mesh(f,skin,[side*.53,.35,.59],[.16,.37,.17]);arm.rotation.z=-side*.16;
-      mesh(f,light,[side*.54,.12,.75],[.23,.1,.25]);
-      for(let j=0;j<3;j++){
-        const toe=mesh(f,skin,[side*.54+(j-1)*.14,.10,.94],[.065,.055,.19]);toe.rotation.y=(j-1)*.23;
-      }
-      mesh(f,skin,[side*.48,1.34,.34],[.31,.33,.29]);
-      mesh(f,white,[side*.48,1.38,.565],[.225,.23,.12]);
-      mesh(f,black,[side*.48,1.39,.668],[.10,.135,.048]);
-      mesh(f,white,[side*.45,1.44,.706],[.033,.04,.018]);
-      mesh(f,blush,[side*.63,.91,.775],[.14,.065,.025]);
-      mesh(f,dark,[side*.19,1.05,.86],[.035,.025,.018]);
+      mesh(f,skin,[side*.7,.22,-.05],[.38,.23,.43]);
+      mesh(f,skin,[side*.43,.12,.57],[.19,.12,.27]);
+      mesh(f,skin,[side*.43,1.16,.3],[.25,.25,.24]);
+      mesh(f,black,[side*.43,1.19,.525],[.085,.085,.055],eyeGeometry);
     }
-    const smilePoints=[[-.35,.88,.818],[-.18,.835,.86],[0,.825,.871],[.18,.835,.86],[.35,.88,.818]].map(p=>new THREE.Vector3(...p));
-    f.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(smilePoints),new THREE.LineBasicMaterial({color:0x395143})));
-    // A few facets on the back, kept in the frog's own colour family.
-    for(let n=0;n<3;n++) mesh(f,dark,[(n-1)*.28,.99,-.35],[.09,.045,.12]);
     f.rotation.y=[.18,-.25,.12,-.16][index];
     return f;
   }
@@ -244,28 +204,10 @@ try {
     lily(group,1.7,i*.8+.4);
     const model=frog(group,colors[i],i);
     group.traverse(obj=>{if(obj.isMesh){obj.userData.section=i;targets.push(obj);}});
-    const label=document.createElement('button');label.className='frog-label';label.type='button';
-    label.setAttribute('aria-haspopup','dialog');label.setAttribute('aria-label','Open '+names[i]);
-    const dot=document.createElement('span');dot.className='dot';dot.style.setProperty('--color',colors[i]);
-    label.append(dot,document.createTextNode(names[i]));labels.append(label);
-    label.addEventListener('click',()=>openSection(i,label));
-    label.addEventListener('mouseenter',()=>{hover=i;});
-    label.addEventListener('mouseleave',()=>{hover=-1;});
-    label.addEventListener('focus',()=>{hover=i;});
-    label.addEventListener('blur',()=>{hover=-1;});
-    islands.push({group,model,label,anchor:new THREE.Vector3(x,0,z+2.05)});
+    islands.push({group,model});
     for(let n=0;n<2;n++){
       const ring=new THREE.Mesh(new THREE.RingGeometry(1.85+n*.38,1.87+n*.38,64),new THREE.MeshBasicMaterial({color:0xd6f5ff,transparent:true,opacity:.35,side:THREE.DoubleSide,depthWrite:false}));
       ring.rotation.x=-Math.PI/2;ring.position.set(x,.035+n*.008,z);scene.add(ring);ripples.push({ring,phase:i+n*2});
-    }
-  });
-  // Small empty pads and water flowers make the pond feel inhabited.
-  [[-6,1,.65],[5.8,1,.7],[-.5,-4.6,.55],[.5,5.6,.6],[-6,-4.6,.45],[6,4.9,.5]].forEach(([x,z,r],i)=>{
-    const g=new THREE.Group();g.position.set(x,.06,z);lily(g,r,i);scene.add(g);
-    if(i===1||i===3){
-      const pink=mat(0xf3c1cb),center=mat(0xf2cf6c);
-      for(let j=0;j<6;j++){const a=j*Math.PI/3;const p=mesh(g,pink,[Math.cos(a)*.2,.18,Math.sin(a)*.2],[.13,.13,.28]);p.rotation.y=-a+Math.PI/2;}
-      mesh(g,center,[0,.26,0],[.13,.1,.13]);
     }
   });
   const raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();
@@ -288,7 +230,7 @@ try {
   });
   renderer.domElement.addEventListener('pointerup',e=>{
     if(down&&e.pointerId===down.id&&!dragged&&!dialog.open){
-      const i=hit(e);if(i>=0)openSection(i,islands[i].label);
+      const i=hit(e);if(i>=0)openSection(i);
     }
     pointerCount=Math.max(0,pointerCount-1);
     if(!pointerCount){down=null;dragged=false;}
@@ -304,37 +246,33 @@ try {
   motionButton.addEventListener('click',()=>{paused=!paused;motionLabel();});
   motionPreference.addEventListener('change',e=>{paused=e.matches;motionLabel();});
   resetButton.addEventListener('click',()=>controls.reset());
+  let fitted=false;
   function resize(){
     const w=host.clientWidth,h=Math.max(host.clientHeight,1),aspect=w/h;
-    const halfHeight=Math.max(7.6,7.7/aspect);
-    camera.left=-halfHeight*aspect;camera.right=halfHeight*aspect;camera.top=halfHeight;camera.bottom=-halfHeight;camera.updateProjectionMatrix();
-    renderer.setSize(w,h); 
+    camera.aspect=aspect;camera.updateProjectionMatrix();
+    if(!fitted){
+      const verticalFov=THREE.MathUtils.degToRad(camera.fov);
+      const horizontalFov=2*Math.atan(Math.tan(verticalFov/2)*aspect);
+      const distance=Math.max(23,7.1/Math.tan(horizontalFov/2));
+      camera.position.copy(controls.target).add(new THREE.Vector3(0,12,19).normalize().multiplyScalar(distance));
+      controls.maxDistance=Math.max(65,distance*1.5);
+      controls.update();controls.saveState();fitted=true;
+    }
+    renderer.setSize(w,h);
   }
   new ResizeObserver(resize).observe(host);resize();
-  const projected=new THREE.Vector3();
   let time=0,last=0;
   function render(now){
     const dt=Math.min((now-last)/1000,.05);last=now;
     if(document.hidden)return;
     controls.enabled=!dialog.open;controls.update();
     if(!paused&&!dialog.open)time+=dt;
-    const attr=waterGeo.attributes.position;
-    for(let i=0;i<attr.count;i++){
-      const x=waterBase[i*3],z=waterBase[i*3+2];
-      attr.setY(i,.018*Math.sin(x*1.5+time*.8)+.014*Math.cos(z*1.8+time*.7));
-    }
-    attr.needsUpdate=true;waterGeo.computeVertexNormals();
     islands.forEach((island,i)=>{
       island.group.position.y=.07+Math.sin(time*1.15+i*1.8)*.035;
       island.group.rotation.z=Math.sin(time*.8+i)*.012;
       const active=hover===i;
       const target=active?1.055:1;
       island.model.scale.lerp(new THREE.Vector3(target,target,target),paused?1:.12);
-      island.label.dataset.active=String(active);
-      projected.copy(island.anchor).project(camera);
-      const x=(projected.x*.5+.5)*host.clientWidth,y=(-projected.y*.5+.5)*host.clientHeight;
-      island.label.style.transform='translate(-50%,-50%) translate('+x+'px,'+y+'px)';
-      island.label.style.visibility=Math.abs(projected.x)>1||Math.abs(projected.y)>1?'hidden':'visible';
     });
     ripples.forEach(({ring,phase})=>{const p=(time*.16+phase*.31)%1;ring.scale.setScalar(1+p*.3);ring.material.opacity=.32*(1-p);});
     renderer.render(scene,camera);
