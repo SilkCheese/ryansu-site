@@ -23,7 +23,7 @@ dialog::backdrop{background:#123f4c38;backdrop-filter:blur(7px)}
 .modal-head{position:sticky;top:0;z-index:2;height:0;display:flex;justify-content:flex-end;padding:16px 16px 0;pointer-events:none}
 .close{border:1px solid #e4e9e3;background:#f8faf7;border-radius:50%;width:34px;height:34px;font-size:22px;line-height:1;flex:none;pointer-events:auto}
 .modal-body{padding:16px 30px 30px;font-size:14px;line-height:1.85}.modal-body h2{font-size:32px;font-weight:500;letter-spacing:-1px;margin:12px 40px 22px 0}.modal-body h3{font-size:15px;font-weight:600;margin:27px 0 12px}.modal-body ul{padding-left:19px}.modal-body li{padding-left:3px;margin:12px 0}.modal-body a{color:#277566;text-underline-offset:4px;text-decoration-thickness:1px}.result{padding:15px 0;border-bottom:1px solid #edf0eb}.result:last-child{border:0}
-@media(max-width:600px){header{top:24px;left:24px}h1{font-size:30px}.toolbar{right:18px;bottom:18px}footer{left:16px;right:100px;bottom:16px}.modal-body{padding:12px 22px 22px}.modal-body h2{font-size:28px}}
+@media(max-width:600px){header{top:24px;left:24px}h1{font-size:30px}.toolbar{right:18px;bottom:18px}footer{left:16px;right:190px;bottom:16px}.modal-body{padding:12px 22px 22px}.modal-body h2{font-size:28px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.1/examples/jsm/"}}</script>
@@ -33,7 +33,7 @@ dialog::backdrop{background:#123f4c38;backdrop-filter:blur(7px)}
 <main id="pond" aria-label="Interactive 3D pond. Select a frog or use the section buttons below.">
 <p id="status" role="status">Loading…</p>
 </main>
-<div class="toolbar"><button class="utility" id="motion" aria-label="Pause pond animation" title="Pause animation" hidden>Ⅱ</button><button class="utility" id="reset" aria-label="Reset pond view" title="Reset view" hidden>↺</button><button class="utility" id="credits" aria-label="Sky footage credit" title="Sky footage credit">i</button></div>
+<div class="toolbar"><button class="utility" id="sound" aria-label="Enable rain sound" title="Enable rain sound" aria-pressed="false"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4Z"/><path d="m16 9 5 6m0-6-5 6"/></svg></button><button class="utility" id="motion" aria-label="Pause pond animation" title="Pause animation" hidden>Ⅱ</button><button class="utility" id="reset" aria-label="Reset pond view" title="Reset view" hidden>↺</button><button class="utility" id="credits" aria-label="Sky footage credit" title="Sky footage credit">i</button></div>
 <footer><nav aria-label="Explore sections"></nav></footer>
 <dialog id="section-dialog" aria-labelledby="section-title"><div class="modal-head"><button class="close" aria-label="Close section">×</button></div><div class="modal-body"></div></dialog>
 <noscript><style>#pond,.toolbar,footer{display:none}header{position:static;margin:30px}body{overflow:auto;background:#fff}#nojs{max-width:720px;margin:30px;line-height:1.7}</style><div id="nojs"><section>
@@ -46,45 +46,45 @@ dialog::backdrop{background:#123f4c38;backdrop-filter:blur(7px)}
   </section>
 <section>
     <h2>Cross Country</h2>
-    <p class="result"><a href="https://www.trackdatabase.com/viewmeet.php?current_meet=zzzz_db1752&amp;meet=enp6el9kYjE3NTI=&amp;Evt=638">Huron Heights Harrier XC</a> — 9th of 176 as a junior.</p>
-    <p class="result"><a href="https://www.trackdatabase.com/viewmeet.php?current_meet=zzzz_db1827&amp;meet=enp6el9kYjE4Mjc=&amp;Evt=4">CISAA</a> — 9th of 89.</p>
-    <p class="result"><a href="https://www.trackdatabase.com/viewmeet.php?current_meet=zzzz_db1749&amp;meet=enp6el9kYjE3NDk=&amp;Evt=682">OFSAA Provincials</a> — 132nd of 276.</p>
+    <p class="result"><a href="https://www.trackdatabase.com/viewmeet.php?current_meet=zzzz_db1752&amp;meet=enp6el9kYjE3NTI=&amp;Evt=638">Huron Heights Harrier XC</a> — 9th out of 176 as a junior.</p>
+    <p class="result"><a href="https://www.trackdatabase.com/viewmeet.php?current_meet=zzzz_db1827&amp;meet=enp6el9kYjE4Mjc=&amp;Evt=4">CISAA</a> — 9th out of 89.</p>
+    <p class="result"><a href="https://www.trackdatabase.com/viewmeet.php?current_meet=zzzz_db1749&amp;meet=enp6el9kYjE3NDk=&amp;Evt=682">OFSAA Provincials</a> — 132nd out of 276.</p>
   </section>
 <section>
     <h2>Debate</h2>
     <h3>Leadership and initiatives</h3>
     <ul>
-      <li>Co-tournament director of Argu-Mint Cup, a tournament with over 100 debaters.</li>
-      <li>Co-tournament director of the Speech and Debate Canada Invitational, with over 120 debaters from 16 countries and a $550 prize pool.</li>
+      <li>Co-tournament director of the Argu-Mint Cup, a tournament with more than 100 debaters.</li>
+      <li>Co-tournament director of the Speech and Debate Canada Invitational, with more than 120 debaters from 16 countries and a $550 prize pool.</li>
       <li>Secured a $300 sponsorship from the Speech and Debate Canada Foundation.</li>
       <li>Started a coaching service connecting experienced high school debaters with new debaters, raising $120 for tournament fees.</li>
-      <li>Hosted a seminar featuring a Team Canada debate member.</li>
-      <li>Made outrounds at several tournaments and qualified for Junior Nationals CNDF.</li>
+      <li>Hosted a seminar featuring a member of Team Canada’s debate team.</li>
+      <li>Reached the elimination rounds at several tournaments and qualified for the CNDF Junior Nationals.</li>
     </ul>
 
     <h3>Tournament results</h3>
     <ul>
-      <li><a href="https://vwsdc2026.calicotab.com/vwsdc2026/">Vancouver WSDC</a> — Open Octofinals, 15th Open Team, 23rd U16 Speaker.</li>
-      <li><a href="https://qhst2026.calicotab.com/qhst2026/">Queens HST 2026</a> — Open Quarterfinals, 4th Open Team, 1st Junior Team, 4th Junior Speaker, 12th Open Speaker.</li>
-      <li><a href="https://hhwo26.calicotab.com/hhwo26/">Hart House Winter Open</a> — 9th Open Team Reserve Break, 2nd Junior Speaker, 19th Open Speaker.</li>
-      <li><a href="https://qho2025.calicotab.com/_/">Queens Holiday Open</a> — Open Partial Quarterfinalist, 10th Junior Speaker.</li>
-      <li><a href="https://qbs2025.calicotab.com/qbts2025/">Queens Back To School</a> — Open Grand Finalist, 2nd Junior Speaker.</li>
-      <li><a href="https://qhst2025.calicotab.com/QHST2025/">Queens HST 2025</a> — Junior Champion, 11th Junior Speaker.</li>
-      <li><a href="https://waterloohst.calicotab.com/uwspringhst2025/">Waterloo HST</a> — Open Quarterfinals, 18th Junior Speaker.</li>
+      <li><a href="https://vwsdc2026.calicotab.com/vwsdc2026/">Vancouver WSDC</a> — Open octofinalist; 15th-place open team; 23rd-place U16 speaker.</li>
+      <li><a href="https://qhst2026.calicotab.com/qhst2026/">Queen’s HST 2026</a> — Open quarterfinalist; 4th-place open team; 1st-place junior team; 4th-place junior speaker; 12th-place open speaker.</li>
+      <li><a href="https://hhwo26.calicotab.com/hhwo26/">Hart House Winter Open</a> — 9th-place open team (reserve break); 2nd-place junior speaker; 19th-place open speaker.</li>
+      <li><a href="https://qho2025.calicotab.com/_/">Queen’s Holiday Open</a> — Open partial quarterfinalist; 10th-place junior speaker.</li>
+      <li><a href="https://qbs2025.calicotab.com/qbts2025/">Queen’s Back to School</a> — Open grand finalist; 2nd-place junior speaker.</li>
+      <li><a href="https://qhst2025.calicotab.com/QHST2025/">Queen’s HST 2025</a> — Junior champion; 11th-place junior speaker.</li>
+      <li><a href="https://waterloohst.calicotab.com/uwspringhst2025/">Waterloo HST</a> — Open quarterfinalist; 18th-place junior speaker.</li>
     </ul>
   </section>
 <section>
-    <h2>Other activities</h2>
+    <h2>Other Activities</h2>
     <ul>
-      <li>Outreach Manager at the CYCS 2026 Leadership Summit.</li>
+      <li>Outreach manager at the CYCS 2026 Leadership Summit.</li>
       <li>Member of the UCC Sustainability Council.</li>
-      <li>Shortlisted for the John Locke Essay Competition junior pool, receiving a commendation. <a href="https://docs.google.com/document/d/1MCnwodJLQJXwShR193iVUNzWTWHSKNBJBhwnnqYi-rY/edit?usp=sharing">Read the essay</a>.</li>
-      <li>Political canvassing for Vincent Ke and Weidong Pei, trustee.</li>
+      <li>Shortlisted in the junior category of the John Locke Essay Competition and received a commendation. <a href="https://docs.google.com/document/d/1MCnwodJLQJXwShR193iVUNzWTWHSKNBJBhwnnqYi-rY/edit?usp=sharing">Read the essay</a>.</li>
+      <li>Canvassed for Vincent Ke and trustee Weidong Pei.</li>
     </ul>
   </section></div></noscript>
 <script>
 'use strict';
-const sections = ["\n    \u003ch2>Hobbies\u003c/h2>\n    \u003cul>\n      \u003cli>Piano\u003c/li>\n      \u003cli>Saxophone and jazz band\u003c/li>\n      \u003cli>Gardening\u003c/li>\n    \u003c/ul>\n  ","\n    \u003ch2>Cross Country\u003c/h2>\n    \u003cp class=\"result\">\u003ca href=\"https://www.trackdatabase.com/viewmeet.php?current_meet=zzzz_db1752&amp;meet=enp6el9kYjE3NTI=&amp;Evt=638\">Huron Heights Harrier XC\u003c/a> — 9th of 176 as a junior.\u003c/p>\n    \u003cp class=\"result\">\u003ca href=\"https://www.trackdatabase.com/viewmeet.php?current_meet=zzzz_db1827&amp;meet=enp6el9kYjE4Mjc=&amp;Evt=4\">CISAA\u003c/a> — 9th of 89.\u003c/p>\n    \u003cp class=\"result\">\u003ca href=\"https://www.trackdatabase.com/viewmeet.php?current_meet=zzzz_db1749&amp;meet=enp6el9kYjE3NDk=&amp;Evt=682\">OFSAA Provincials\u003c/a> — 132nd of 276.\u003c/p>\n  ","\n    \u003ch2>Debate\u003c/h2>\n    \u003ch3>Leadership and initiatives\u003c/h3>\n    \u003cul>\n      \u003cli>Co-tournament director of Argu-Mint Cup, a tournament with over 100 debaters.\u003c/li>\n      \u003cli>Co-tournament director of the Speech and Debate Canada Invitational, with over 120 debaters from 16 countries and a $550 prize pool.\u003c/li>\n      \u003cli>Secured a $300 sponsorship from the Speech and Debate Canada Foundation.\u003c/li>\n      \u003cli>Started a coaching service connecting experienced high school debaters with new debaters, raising $120 for tournament fees.\u003c/li>\n      \u003cli>Hosted a seminar featuring a Team Canada debate member.\u003c/li>\n      \u003cli>Made outrounds at several tournaments and qualified for Junior Nationals CNDF.\u003c/li>\n    \u003c/ul>\n\n    \u003ch3>Tournament results\u003c/h3>\n    \u003cul>\n      \u003cli>\u003ca href=\"https://vwsdc2026.calicotab.com/vwsdc2026/\">Vancouver WSDC\u003c/a> — Open Octofinals, 15th Open Team, 23rd U16 Speaker.\u003c/li>\n      \u003cli>\u003ca href=\"https://qhst2026.calicotab.com/qhst2026/\">Queens HST 2026\u003c/a> — Open Quarterfinals, 4th Open Team, 1st Junior Team, 4th Junior Speaker, 12th Open Speaker.\u003c/li>\n      \u003cli>\u003ca href=\"https://hhwo26.calicotab.com/hhwo26/\">Hart House Winter Open\u003c/a> — 9th Open Team Reserve Break, 2nd Junior Speaker, 19th Open Speaker.\u003c/li>\n      \u003cli>\u003ca href=\"https://qho2025.calicotab.com/_/\">Queens Holiday Open\u003c/a> — Open Partial Quarterfinalist, 10th Junior Speaker.\u003c/li>\n      \u003cli>\u003ca href=\"https://qbs2025.calicotab.com/qbts2025/\">Queens Back To School\u003c/a> — Open Grand Finalist, 2nd Junior Speaker.\u003c/li>\n      \u003cli>\u003ca href=\"https://qhst2025.calicotab.com/QHST2025/\">Queens HST 2025\u003c/a> — Junior Champion, 11th Junior Speaker.\u003c/li>\n      \u003cli>\u003ca href=\"https://waterloohst.calicotab.com/uwspringhst2025/\">Waterloo HST\u003c/a> — Open Quarterfinals, 18th Junior Speaker.\u003c/li>\n    \u003c/ul>\n  ","\n    \u003ch2>Other activities\u003c/h2>\n    \u003cul>\n      \u003cli>Outreach Manager at the CYCS 2026 Leadership Summit.\u003c/li>\n      \u003cli>Member of the UCC Sustainability Council.\u003c/li>\n      \u003cli>Shortlisted for the John Locke Essay Competition junior pool, receiving a commendation. \u003ca href=\"https://docs.google.com/document/d/1MCnwodJLQJXwShR193iVUNzWTWHSKNBJBhwnnqYi-rY/edit?usp=sharing\">Read the essay\u003c/a>.\u003c/li>\n      \u003cli>Political canvassing for Vincent Ke and Weidong Pei, trustee.\u003c/li>\n    \u003c/ul>\n  "];
+const sections = ["\n    \u003ch2>Hobbies\u003c/h2>\n    \u003cul>\n      \u003cli>Piano\u003c/li>\n      \u003cli>Saxophone and jazz band\u003c/li>\n      \u003cli>Gardening\u003c/li>\n    \u003c/ul>\n  ","\n    \u003ch2>Cross Country\u003c/h2>\n    \u003cp class=\"result\">\u003ca href=\"https://www.trackdatabase.com/viewmeet.php?current_meet=zzzz_db1752&amp;meet=enp6el9kYjE3NTI=&amp;Evt=638\">Huron Heights Harrier XC\u003c/a> — 9th out of 176 as a junior.\u003c/p>\n    \u003cp class=\"result\">\u003ca href=\"https://www.trackdatabase.com/viewmeet.php?current_meet=zzzz_db1827&amp;meet=enp6el9kYjE4Mjc=&amp;Evt=4\">CISAA\u003c/a> — 9th out of 89.\u003c/p>\n    \u003cp class=\"result\">\u003ca href=\"https://www.trackdatabase.com/viewmeet.php?current_meet=zzzz_db1749&amp;meet=enp6el9kYjE3NDk=&amp;Evt=682\">OFSAA Provincials\u003c/a> — 132nd out of 276.\u003c/p>\n  ","\n    \u003ch2>Debate\u003c/h2>\n    \u003ch3>Leadership and initiatives\u003c/h3>\n    \u003cul>\n      \u003cli>Co-tournament director of the Argu-Mint Cup, a tournament with more than 100 debaters.\u003c/li>\n      \u003cli>Co-tournament director of the Speech and Debate Canada Invitational, with more than 120 debaters from 16 countries and a $550 prize pool.\u003c/li>\n      \u003cli>Secured a $300 sponsorship from the Speech and Debate Canada Foundation.\u003c/li>\n      \u003cli>Started a coaching service connecting experienced high school debaters with new debaters, raising $120 for tournament fees.\u003c/li>\n      \u003cli>Hosted a seminar featuring a member of Team Canada’s debate team.\u003c/li>\n      \u003cli>Reached the elimination rounds at several tournaments and qualified for the CNDF Junior Nationals.\u003c/li>\n    \u003c/ul>\n\n    \u003ch3>Tournament results\u003c/h3>\n    \u003cul>\n      \u003cli>\u003ca href=\"https://vwsdc2026.calicotab.com/vwsdc2026/\">Vancouver WSDC\u003c/a> — Open octofinalist; 15th-place open team; 23rd-place U16 speaker.\u003c/li>\n      \u003cli>\u003ca href=\"https://qhst2026.calicotab.com/qhst2026/\">Queen’s HST 2026\u003c/a> — Open quarterfinalist; 4th-place open team; 1st-place junior team; 4th-place junior speaker; 12th-place open speaker.\u003c/li>\n      \u003cli>\u003ca href=\"https://hhwo26.calicotab.com/hhwo26/\">Hart House Winter Open\u003c/a> — 9th-place open team (reserve break); 2nd-place junior speaker; 19th-place open speaker.\u003c/li>\n      \u003cli>\u003ca href=\"https://qho2025.calicotab.com/_/\">Queen’s Holiday Open\u003c/a> — Open partial quarterfinalist; 10th-place junior speaker.\u003c/li>\n      \u003cli>\u003ca href=\"https://qbs2025.calicotab.com/qbts2025/\">Queen’s Back to School\u003c/a> — Open grand finalist; 2nd-place junior speaker.\u003c/li>\n      \u003cli>\u003ca href=\"https://qhst2025.calicotab.com/QHST2025/\">Queen’s HST 2025\u003c/a> — Junior champion; 11th-place junior speaker.\u003c/li>\n      \u003cli>\u003ca href=\"https://waterloohst.calicotab.com/uwspringhst2025/\">Waterloo HST\u003c/a> — Open quarterfinalist; 18th-place junior speaker.\u003c/li>\n    \u003c/ul>\n  ","\n    \u003ch2>Other Activities\u003c/h2>\n    \u003cul>\n      \u003cli>Outreach manager at the CYCS 2026 Leadership Summit.\u003c/li>\n      \u003cli>Member of the UCC Sustainability Council.\u003c/li>\n      \u003cli>Shortlisted in the junior category of the John Locke Essay Competition and received a commendation. \u003ca href=\"https://docs.google.com/document/d/1MCnwodJLQJXwShR193iVUNzWTWHSKNBJBhwnnqYi-rY/edit?usp=sharing\">Read the essay\u003c/a>.\u003c/li>\n      \u003cli>Canvassed for Vincent Ke and trustee Weidong Pei.\u003c/li>\n    \u003c/ul>\n  "];
 const names = ['Hobbies','Cross Country','Debate','Other Activities'];
 const colors = ['#78ad50','#e6ac40','#a18bd0','#e7867d'];
 const dialog = document.querySelector('dialog');
@@ -128,6 +128,96 @@ window.pondFailed=()=>{
   document.body.classList.add('fallback');
 };
 </script>
+
+<script>
+(() => {
+  const button=document.querySelector('#sound');
+  const iconOn="<svg width=\"17\" height=\"17\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M11 5 6 9H3v6h3l5 4Z\"/><path d=\"M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14\"/></svg>",iconOff="<svg width=\"17\" height=\"17\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M11 5 6 9H3v6h3l5 4Z\"/><path d=\"m16 9 5 6m0-6-5 6\"/></svg>";
+  let desired=true,context=null,master=null,source=null,activated=false;
+  try{desired=localStorage.getItem('ryansu-rain-sound')!=='off';}catch{}
+  const AudioEngine=window.AudioContext||window.webkitAudioContext;
+  function updateButton(){
+    const audible=desired&&activated&&context?.state==='running'&&!document.hidden;
+    button.innerHTML=audible?iconOn:iconOff;
+    button.setAttribute('aria-pressed',String(audible));
+    button.setAttribute('aria-label',audible?'Mute rain sound':'Enable rain sound');
+    button.title=audible?'Mute rain sound':'Enable rain sound';
+  }
+  // Generate a quiet stereo rain bed and scattered soft water taps locally.
+  function buildAudio(){
+    context=new AudioEngine();
+    const rate=context.sampleRate,duration=16,frames=Math.floor(rate*duration);
+    const buffer=context.createBuffer(2,frames,rate);
+    for(let channel=0;channel<2;channel++){
+      const data=buffer.getChannelData(channel);
+      let smooth=0;
+      for(let i=0;i<frames;i++){
+        const white=Math.random()*2-1;
+        smooth=.965*smooth+.035*white;
+        const t=i/rate;
+        const swell=.84+.08*Math.sin(2*Math.PI*t/duration)+.04*Math.sin(6*Math.PI*t/duration+channel);
+        data[i]=(white*.13+smooth*.7)*swell;
+      }
+      // Soft, short splashes with varied pitches and spacing.
+      for(let d=0;d<105;d++){
+        const start=Math.floor(Math.random()*frames),length=Math.floor(rate*(.025+Math.random()*.04));
+        const frequency=850+Math.random()*1700,level=.035+Math.random()*.065;
+        for(let j=0;j<length;j++){
+          const t=j/rate;
+          const envelope=Math.min(t/.003,1)*Math.exp(-t*85);
+          data[(start+j)%frames]+=level*envelope*(Math.sin(2*Math.PI*frequency*t)*.35+(Math.random()*2-1)*.65);
+        }
+      }
+      // Brief seam fades prevent a click without a noticeable gap.
+      const fade=Math.floor(rate*.008);
+      for(let i=0;i<fade;i++){data[i]*=i/fade;data[frames-1-i]*=i/fade;}
+    }
+    source=context.createBufferSource();source.buffer=buffer;source.loop=true;
+    const highpass=context.createBiquadFilter();highpass.type='highpass';highpass.frequency.value=350;
+    const lowpass=context.createBiquadFilter();lowpass.type='lowpass';lowpass.frequency.value=6200;lowpass.Q.value=.5;
+    master=context.createGain();master.gain.value=0;
+    source.connect(highpass);highpass.connect(lowpass);lowpass.connect(master);master.connect(context.destination);
+    source.start();
+    context.addEventListener('statechange',updateButton);
+  }
+  async function syncAudio(){
+    try{
+      if(!context&&desired)buildAudio();
+      if(!context)return;
+      if(desired&&!document.hidden)await context.resume();
+      const volume=(desired&&!document.hidden) ? .34 : 0;
+      master.gain.cancelScheduledValues(context.currentTime);
+      master.gain.setTargetAtTime(volume,context.currentTime,.08);
+      if(document.hidden)await context.suspend();
+    }catch{
+      desired=false;
+      if(master&&context)master.gain.setTargetAtTime(0,context.currentTime,.04);
+    }
+    updateButton();
+  }
+  button.addEventListener('click',()=>{
+    const audible=desired&&activated&&context?.state==='running';
+    desired=!audible;activated=true;
+    try{localStorage.setItem('ryansu-rain-sound',desired?'on':'off');}catch{}
+    void syncAudio();
+  });
+  function firstInteraction(event){
+    if(activated||!desired||button.contains(event.target))return;
+    if(event.type==='keydown'&&!['Enter',' '].includes(event.key))return;
+    activated=true;void syncAudio();
+  }
+  if(AudioEngine){
+    document.addEventListener('pointerdown',firstInteraction,{passive:true});
+    document.addEventListener('keydown',firstInteraction);
+    document.addEventListener('visibilitychange',()=>{if(activated)void syncAudio();});
+    updateButton();
+  }else{
+    button.disabled=true;button.title='Rain sound is unavailable in this browser';
+    button.setAttribute('aria-label',button.title);
+  }
+})();
+</script>
+
 <script type="module">
 try {
   const [THREE, {OrbitControls}] = await Promise.all([import('three'),import('three/addons/controls/OrbitControls.js')]);
@@ -399,7 +489,7 @@ try {
     drizzleDrops.push({
       splash:makeRing(),echo:makeRing(),
       period:3.8+rainHash(i+4)*1.5,offset:rainHash(i+8)*6,
-      height:5.5+rainHash(i+12)*2.5,speed:3.4+rainHash(i+17)*.8
+      height:5.5+rainHash(i+12)*2.5,speed:4.6+rainHash(i+17)*1.08
     });
   }
 
@@ -522,13 +612,13 @@ try {
       const fallDuration=height/speed;
       if(age<fallDuration){
         const y=height-age*speed+waveHeight(x,z,time);
-        const lean=(fallDuration-age)*.18;
+        const lean=(fallDuration-age)*.08;
         dropTransform.position.set(x-lean,y,z);
         const pixelSize=rainPixelScale*camera.position.distanceTo(dropTransform.position);
         const width=THREE.MathUtils.clamp(pixelSize*1.8,.025,.065);
         const length=THREE.MathUtils.clamp(pixelSize*(10+rainHash(i)*5),.20,.48);
         dropTransform.scale.set(width,length,width);
-        dropTransform.rotation.set(0,0,.045);
+        dropTransform.rotation.set(0,0,.02);
         // The lower tip meets the water at the same point that starts the rings.
         dropTransform.position.y+=length*.5;
       }else{
