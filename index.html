@@ -33,7 +33,7 @@ dialog::backdrop{background:#123f4c38;backdrop-filter:blur(7px)}
 <main id="pond" aria-label="Interactive 3D pond. Select a frog or use the section buttons below.">
 <p id="status" role="status">Loading…</p>
 </main>
-<div class="toolbar"><button class="utility" id="motion" aria-label="Pause pond animation" title="Pause animation" hidden>Ⅱ</button><button class="utility" id="reset" aria-label="Reset pond view" title="Reset view" hidden>↺</button></div>
+<div class="toolbar"><button class="utility" id="motion" aria-label="Pause pond animation" title="Pause animation" hidden>Ⅱ</button><button class="utility" id="reset" aria-label="Reset pond view" title="Reset view" hidden>↺</button><button class="utility" id="credits" aria-label="Sky footage credit" title="Sky footage credit">i</button></div>
 <footer><nav aria-label="Explore sections"></nav></footer>
 <dialog id="section-dialog" aria-labelledby="section-title"><div class="modal-head"><button class="close" aria-label="Close section">×</button></div><div class="modal-body"></div></dialog>
 <noscript><style>#pond,.toolbar,footer{display:none}header{position:static;margin:30px}body{overflow:auto;background:#fff}#nojs{max-width:720px;margin:30px;line-height:1.7}</style><div id="nojs"><section>
@@ -110,6 +110,11 @@ names.forEach((name,i)=>{
   b.addEventListener('click',()=>openSection(i,b));
   document.querySelector('nav').append(b);
 });
+document.querySelector('#credits').addEventListener('click',()=>{
+  returnFocus=document.querySelector('#credits');
+  modalBody.innerHTML='<h2 id="section-title">Sky footage</h2><p><a href="https://commons.wikimedia.org/wiki/File:Clouds_time_lapse.webm">Clouds time lapse</a> by <a href="https://www.flickr.com/people/snowpeak/">John Fowler</a>, <a href="https://creativecommons.org/licenses/by/2.0/">CC BY 2.0</a>. Slowed, looped, and mapped onto the sky and water.</p>';
+  dialog.showModal();dialog.scrollTop=0;
+});
 window.pondUI = {openSection,names,colors,dialog};
 const loadingTimeout=setTimeout(()=>{
   const status=document.querySelector('#status');
@@ -137,8 +142,8 @@ try {
   host.prepend(renderer.domElement);
   renderer.domElement.setAttribute('aria-hidden','true');
   const scene=new THREE.Scene();
-  scene.background=new THREE.Color(0xffffff);
-  scene.fog=new THREE.Fog(0xffffff,100,350);
+  scene.background=new THREE.Color(0xbcdff2);
+  scene.fog=new THREE.Fog(0xc5e3ef,100,450);
   const camera=new THREE.PerspectiveCamera(42,1,.1,1500);
   camera.position.set(0,12.65,19);
   const controls=new OrbitControls(camera,renderer.domElement);
@@ -156,12 +161,116 @@ try {
   Object.assign(sun.shadow.camera,{left:-12,right:12,top:12,bottom:-12,near:.5,far:50});
   sun.shadow.normalBias=.025;sun.shadow.bias=-.0002;
   scene.add(sun);
+
+  // Original footage: John Fowler, CC BY 2.0; credit available in the toolbar.
+  const skyUniforms={
+    skyMap:{value:new THREE.Texture()},
+    skyReady:{value:0}
+  };
+  const skyVideo=document.createElement('video');
+  skyVideo.crossOrigin='anonymous';skyVideo.muted=true;skyVideo.defaultMuted=true;
+  skyVideo.loop=true;skyVideo.playsInline=true;skyVideo.preload='auto';
+  skyVideo.setAttribute('playsinline','');skyVideo.setAttribute('muted','');
+  skyVideo.setAttribute('aria-hidden','true');
+  skyVideo.style.cssText='position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;left:-10px';
+  document.body.append(skyVideo);
+  let skyVideoReady=false,skyVideoFailed=false,videoPlayPending=false;
+  const posterURL='https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9f/Clouds_time_lapse.webm/1280px--Clouds_time_lapse.webm.jpg';
+  new THREE.TextureLoader().load(posterURL,texture=>{
+    // Raw RGB is decoded by the shared sky shader.
+    if(!skyVideoReady){skyUniforms.skyMap.value=texture;skyUniforms.skyReady.value=1;}
+  },undefined,()=>{});
+  const skyTexture=new THREE.VideoTexture(skyVideo);
+  skyTexture.minFilter=THREE.LinearFilter;skyTexture.magFilter=THREE.LinearFilter;
+  skyVideo.addEventListener('loadeddata',()=>{
+    skyVideoReady=true;skyUniforms.skyMap.value=skyTexture;skyUniforms.skyReady.value=1;
+  });
+  skyVideo.addEventListener('error',()=>{skyVideoFailed=true;});
+  skyVideo.src='https://upload.wikimedia.org/wikipedia/commons/9/9f/Clouds_time_lapse.webm';
+  skyVideo.playbackRate=.5;
+  skyVideo.load();
+  const skyGLSL = [
+    'uniform sampler2D skyMap;',
+    'uniform float skyReady;',
+    'vec3 skyColour(vec3 direction){',
+    '  vec3 d=normalize(direction);',
+    '  float elevation=clamp(d.y,0.0,1.0);',
+    '  vec3 horizon=vec3(0.64,0.79,0.88);',
+    '  vec3 blue=vec3(0.11,0.40,0.75);',
+    '  vec3 colour=mix(horizon,blue,smoothstep(0.0,0.8,elevation));',
+    '  if(skyReady>0.5){',
+    '    float longitude=atan(d.z,d.x)/6.2831853+0.5;',
+    '    float u=1.0-abs(mod(longitude*4.0,2.0)-1.0);',
+    '    float v=0.12+asin(elevation)/1.5707963*0.76;',
+    '    vec3 footage=pow(texture2D(skyMap,vec2(u,v)).rgb,vec3(2.2));',
+    '    colour=mix(horizon,footage,smoothstep(0.0,0.16,elevation));',
+    '    colour=mix(colour,blue,smoothstep(0.92,1.0,elevation));',
+    '  }',
+    '  return colour;',
+    '}'
+  ].join('\n');
+  const skyMaterial=new THREE.ShaderMaterial({
+    uniforms:skyUniforms,side:THREE.BackSide,depthWrite:false,
+    vertexShader:'varying vec3 vDirection; void main(){vDirection=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
+    fragmentShader:skyGLSL+'\nvarying vec3 vDirection;\nvoid main(){gl_FragColor=vec4(skyColour(vDirection),1.0);\n#include <colorspace_fragment>\n}'
+  });
+  const skyDome=new THREE.Mesh(new THREE.SphereGeometry(1100,48,24),skyMaterial);
+  skyDome.renderOrder=-10;skyDome.frustumCulled=false;scene.add(skyDome);
+
   const mat=(color)=>new THREE.MeshStandardMaterial({color,roughness:.88,flatShading:true});
-  const waterMaterial=new THREE.MeshStandardMaterial({color:0x67bede,roughness:.38,metalness:.04,flatShading:true});
-  const waterGeo=new THREE.PlaneGeometry(2000,2000);
+  const waterTime={value:0};
+  const waveGLSL=[
+    'uniform float waterTime;',
+    'float waveHeight(vec2 p){',
+    '  return 0.034*sin(p.x*0.85+waterTime*0.85)+0.022*sin(p.y*1.15-waterTime*0.65)+0.012*sin((p.x+p.y)*1.7+waterTime);',
+    '}'
+  ].join('\n');
+  const waterMaterial=new THREE.ShaderMaterial({
+    uniforms:{waterTime,...skyUniforms},
+    transparent:true,depthWrite:false,side:THREE.FrontSide,
+    vertexShader:waveGLSL+'\nvarying vec3 vWaterPosition;\nvoid main(){vec3 p=position;p.y+=waveHeight(p.xz);vWaterPosition=(modelMatrix*vec4(p,1.0)).xyz;gl_Position=projectionMatrix*viewMatrix*vec4(vWaterPosition,1.0);}',
+    fragmentShader:skyGLSL+'\n'+waveGLSL+'\n'+[
+      'varying vec3 vWaterPosition;',
+      'void main(){',
+      ' vec2 p=vWaterPosition.xz;',
+      ' float dx=0.0289*cos(p.x*.85+waterTime*.85)+0.0204*cos((p.x+p.y)*1.7+waterTime);',
+      ' float dz=0.0253*cos(p.y*1.15-waterTime*.65)+0.0204*cos((p.x+p.y)*1.7+waterTime);',
+      ' dx+=0.012*cos(p.x*7.0+p.y*3.0+waterTime*1.2);',
+      ' dz+=0.010*sin(p.y*8.0-p.x*2.0-waterTime);',
+      ' vec3 normal=normalize(vec3(-dx,1.0,-dz));',
+      ' vec3 viewDirection=normalize(cameraPosition-vWaterPosition);',
+      ' float fresnel=pow(1.0-max(dot(viewDirection,normal),0.0),3.0);',
+      ' vec3 reflected=skyColour(reflect(-viewDirection,normal));',
+      ' vec3 colour=mix(vec3(0.10,0.48,0.66),reflected,0.16+0.68*fresnel);',
+      ' vec3 sunDirection=normalize(vec3(-0.4,0.8,0.45));',
+      ' vec3 halfway=normalize(sunDirection+viewDirection);',
+      ' float sparkle=pow(max(dot(normal,halfway),0.0),180.0);',
+      ' colour+=vec3(1.0,0.95,0.80)*sparkle*0.65;',
+      ' float waveLight=0.5+0.5*sin(p.x*1.3+p.y*.8+waterTime*.6);',
+      ' colour+=vec3(0.025,0.045,0.05)*pow(waveLight,12.0);',
+      ' float distanceFade=smoothstep(100.0,450.0,length(cameraPosition-vWaterPosition));',
+      ' colour=mix(colour,vec3(0.64,0.79,0.88),distanceFade);',
+      ' gl_FragColor=vec4(colour,mix(0.38,0.98,max(fresnel,distanceFade)));',
+      ' #include <colorspace_fragment>',
+      '}'
+    ].join('\n')
+  });
+  // Concentrate vertices around the frogs, leaving a broad surface out to the horizon.
+  const waterGeo=new THREE.PlaneGeometry(2000,2000,160,160);
   waterGeo.rotateX(-Math.PI/2);
+  const waterPositions=waterGeo.attributes.position;
+  for(let i=0;i<waterPositions.count;i++){
+    const x=waterPositions.getX(i)/1000,z=waterPositions.getZ(i)/1000;
+    waterPositions.setXYZ(i,Math.sign(x)*x*x*1000,0,Math.sign(z)*z*z*1000);
+  }
+  waterGeo.computeBoundingSphere();
   const water=new THREE.Mesh(waterGeo,waterMaterial);
-  water.receiveShadow=true;scene.add(water);
+  water.renderOrder=2;scene.add(water);
+  const bed=new THREE.Mesh(new THREE.PlaneGeometry(2000,2000),new THREE.MeshBasicMaterial({color:0x3b9fbe}));
+  bed.rotation.x=-Math.PI/2;bed.position.y=-3;scene.add(bed);
+  function waveHeight(x,z,t){
+    return .034*Math.sin(x*.85+t*.85)+.022*Math.sin(z*1.15-t*.65)+.012*Math.sin((x+z)*1.7+t);
+  }
   const green=mat(0x5f9c59),greenEdge=mat(0x4c8950);
   const black=new THREE.MeshBasicMaterial({color:0x111111});
   const faceted=new THREE.SphereGeometry(1,8,5);
@@ -204,12 +313,66 @@ try {
     lily(group,1.7,i*.8+.4);
     const model=frog(group,colors[i],i);
     group.traverse(obj=>{if(obj.isMesh){obj.userData.section=i;targets.push(obj);}});
-    islands.push({group,model});
+    islands.push({group,model,x,z});
     for(let n=0;n<2;n++){
       const ring=new THREE.Mesh(new THREE.RingGeometry(1.85+n*.38,1.87+n*.38,64),new THREE.MeshBasicMaterial({color:0xd6f5ff,transparent:true,opacity:.35,side:THREE.DoubleSide,depthWrite:false}));
-      ring.rotation.x=-Math.PI/2;ring.position.set(x,.035+n*.008,z);scene.add(ring);ripples.push({ring,phase:i+n*2});
+      ring.rotation.x=-Math.PI/2;ring.renderOrder=3;ring.position.set(x,.08+n*.008,z);scene.add(ring);ripples.push({ring,phase:i+n*2,x,z});
     }
   });
+
+  const lotusFlowers=[];
+  const petalWhite=mat(0xffe9ed),petalPink=mat(0xf2a8c6),petalInner=mat(0xffc9df),pollen=mat(0xf6ce68);
+  function lotus(x,z,size,phase){
+    const group=new THREE.Group();scene.add(group);
+    lily(group,.92,phase);
+    const flower=new THREE.Group();flower.position.y=.09;group.add(flower);
+    // Two loose rings of petals around a small golden centre.
+    for(let layer=0;layer<2;layer++){
+      const count=layer?6:8;
+      for(let i=0;i<count;i++){
+        const angle=i/count*Math.PI*2+layer*.35;
+        const petal=mesh(flower,layer?petalInner:(i%2?petalWhite:petalPink),
+          [Math.sin(angle)*(layer?.18:.33),layer?.26:.15,Math.cos(angle)*(layer?.18:.33)],
+          [layer?.13:.17,layer?.25:.11,layer?.26:.43]);
+        petal.rotation.y=angle;petal.rotation.x=layer?-.38:-.16;
+      }
+    }
+    mesh(flower,pollen,[0,.34,0],[.17,.10,.17]);
+    group.scale.setScalar(size);
+    lotusFlowers.push({group,x,z,phase});
+  }
+  lotus(-6.4,.4,.85,0);lotus(5.9,.2,.95,2);
+  lotus(-.4,-5.5,.7,4);lotus(1,5.8,.8,6);
+  lotus(-7,-4.8,.62,8);lotus(6.6,5.2,.65,10);
+
+  const koi=[];
+  const koiWhite=mat(0xfff5df),koiOrange=mat(0xe97d36),koiBlack=mat(0x354645),koiGold=mat(0xe7b75c);
+  function fin(parent,material,points){
+    const geometry=new THREE.BufferGeometry();
+    geometry.setAttribute('position',new THREE.Float32BufferAttribute(points,3));geometry.computeVertexNormals();
+    const m=new THREE.Mesh(geometry,material);m.material=material.clone();m.material.side=THREE.DoubleSide;
+    parent.add(m);return m;
+  }
+  for(let i=0;i<6;i++){
+    const fish=new THREE.Group();scene.add(fish);
+    const body=new THREE.Group();fish.add(body);
+    const base=i===4?koiGold:koiWhite;
+    mesh(body,base,[0,0,0],[.23,.15,.66]);
+    mesh(body,base,[0,-.015,.5],[.17,.13,.24]);
+    // Raised, flattened colour patches read clearly through the water.
+    mesh(body,i===4?koiWhite:koiOrange,[-.055,.125,.22],[.15,.035,.20]);
+    mesh(body,koiOrange,[.045,.115,-.26],[.15,.035,.17]);
+    if(i%2===0)mesh(body,koiBlack,[.08,.13,-.04],[.10,.028,.11]);
+    const tail=new THREE.Group();tail.position.z=-.57;body.add(tail);
+    fin(tail,koiOrange,[0,0,.06,-.32,.015,-.43,0,0,-.31,0,0,.06,0,0,-.31,.32,.015,-.43]);
+    const left=fin(body,base,[-.13,0,.2,-.43,-.02,-.05,-.15,0,-.12]);
+    const right=fin(body,base,[.13,0,.2,.15,0,-.12,.43,-.02,-.05]);
+    for(const side of [-1,1])mesh(body,black,[side*.115,.075,.61],[.026,.026,.026],eyeGeometry);
+    fish.scale.setScalar(.8+(i%3)*.12);
+    fish.traverse(o=>{if(o.isMesh){o.castShadow=false;o.receiveShadow=false;}});
+    koi.push({fish,body,tail,left,right,phase:i*Math.PI/3,rx:4.6+(i%3)*.65,rz:3.8+(i%2)*.7,speed:(i%2?-1:1)*(.075+i*.008),depth:-.48-(i%3)*.10});
+  }
+
   const raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();
   let hover=-1,down=null,dragged=false,pointerCount=0;
   function hit(event){
@@ -239,12 +402,26 @@ try {
   renderer.domElement.addEventListener('pointerleave',()=>{hover=-1;});
   const motionPreference=matchMedia('(prefers-reduced-motion: reduce)');
   let paused=motionPreference.matches;
+  let skyPlaybackWanted=false;
+  function syncSkyPlayback(){
+    const wanted=!paused&&!dialog.open&&!document.hidden&&!skyVideoFailed;
+    if(wanted===skyPlaybackWanted)return;
+    skyPlaybackWanted=wanted;
+    if(!wanted){skyVideo.pause();return;}
+    if(videoPlayPending)return;
+    videoPlayPending=true;
+    skyVideo.play().catch(()=>{/* Retry on the next user gesture or visibility change. */}).finally(()=>{videoPlayPending=false;});
+  }
+  // A gesture can resume video on browsers that block muted autoplay.
+  renderer.domElement.addEventListener('pointerdown',()=>{skyPlaybackWanted=false;syncSkyPlayback();});
+  document.addEventListener('visibilitychange',()=>{skyPlaybackWanted=false;syncSkyPlayback();});
+  dialog.addEventListener('close',()=>{skyPlaybackWanted=false;syncSkyPlayback();});
   const motionButton=document.querySelector('#motion'),resetButton=document.querySelector('#reset');
   motionButton.hidden=false;resetButton.hidden=false;
   function motionLabel(){motionButton.textContent=paused?'▷':'Ⅱ';motionButton.setAttribute('aria-label',paused?'Resume pond animation':'Pause pond animation');motionButton.title=paused?'Resume animation':'Pause animation';}
   motionLabel();
-  motionButton.addEventListener('click',()=>{paused=!paused;motionLabel();});
-  motionPreference.addEventListener('change',e=>{paused=e.matches;motionLabel();});
+  motionButton.addEventListener('click',()=>{paused=!paused;motionLabel();syncSkyPlayback();});
+  motionPreference.addEventListener('change',e=>{paused=e.matches;motionLabel();syncSkyPlayback();});
   resetButton.addEventListener('click',()=>controls.reset());
   let fitted=false;
   function resize(){
@@ -264,20 +441,37 @@ try {
   let time=0,last=0;
   function render(now){
     const dt=Math.min((now-last)/1000,.05);last=now;
+    syncSkyPlayback();
     if(document.hidden)return;
     controls.enabled=!dialog.open;controls.update();
     if(!paused&&!dialog.open)time+=dt;
+    waterTime.value=time;
+    skyDome.position.copy(camera.position);
+    lotusFlowers.forEach(({group,x,z,phase})=>{
+      group.position.set(x+Math.sin(time*.12+phase)*.18,.055+waveHeight(x,z,time),z+Math.cos(time*.10+phase)*.14);
+      group.rotation.set(Math.sin(time*.7+phase)*.025,Math.sin(time*.10+phase)*.12,Math.cos(time*.6+phase)*.025);
+    });
+    koi.forEach(({fish,body,tail,left,right,phase,rx,rz,speed,depth})=>{
+      const a=time*speed+phase;
+      const x=Math.cos(a)*rx,z=Math.sin(a)*rz;
+      fish.position.set(x,depth+Math.sin(time*.6+phase)*.035,z);
+      fish.rotation.y=Math.atan2(-Math.sin(a)*rx*speed,Math.cos(a)*rz*speed);
+      body.rotation.y=Math.sin(time*2.8+phase)*.045;
+      tail.rotation.y=Math.sin(time*3.8+phase)*.32;
+      left.rotation.z=Math.sin(time*2+phase)*.16;
+      right.rotation.z=-Math.sin(time*2+phase)*.16;
+    });
     islands.forEach((island,i)=>{
-      island.group.position.y=.07+Math.sin(time*1.15+i*1.8)*.035;
+      island.group.position.y=.065+waveHeight(island.x,island.z,time);
       island.group.rotation.z=Math.sin(time*.8+i)*.012;
       const active=hover===i;
       const target=active?1.055:1;
       island.model.scale.lerp(new THREE.Vector3(target,target,target),paused?1:.12);
     });
-    ripples.forEach(({ring,phase})=>{const p=(time*.16+phase*.31)%1;ring.scale.setScalar(1+p*.3);ring.material.opacity=.32*(1-p);});
+    ripples.forEach(({ring,phase,x,z})=>{const p=(time*.16+phase*.31)%1;ring.position.y=.08+waveHeight(x,z,time);ring.scale.setScalar(1+p*.3);ring.material.opacity=.18*(1-p);});
     renderer.render(scene,camera);
   }
-  renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();renderer.setAnimationLoop(null);window.pondFailed();});
+  renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();renderer.setAnimationLoop(null);skyVideoFailed=true;skyVideo.pause();window.pondFailed();});
   renderer.setAnimationLoop(render);
   window.pondReady();
 } catch(error) {
