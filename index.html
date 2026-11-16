@@ -5,46 +5,74 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Ryan Su</title>
   <style>
-    :root { --ink: #17211e; --paper: #f6f3ea; --green: #29674f; --gold: #f3c75b; }
-    * { box-sizing: border-box; }
-    body { margin: 0; font-family: Arial, Helvetica, sans-serif; color: var(--ink); background: var(--paper); }
-    main { max-width: 960px; margin: auto; padding: 28px 22px 60px; }
-    nav { display: flex; justify-content: space-between; align-items: center; font-size: 14px; letter-spacing: .08em; text-transform: uppercase; }
-    .dot { color: var(--green); }
-    .hero { min-height: 470px; display: grid; align-content: center; border-bottom: 1px solid #c9c4b8; }
-    h1 { max-width: 760px; margin: 0; font-family: Georgia, serif; font-size: clamp(64px, 12vw, 132px); line-height: .88; letter-spacing: -.065em; }
-    .intro { max-width: 520px; margin: 30px 0 0; font-size: 20px; line-height: 1.45; }
-    .tag { display: inline-block; margin-top: 24px; padding: 9px 13px; border-radius: 999px; background: var(--gold); font-size: 14px; font-weight: bold; }
-    section { padding: 64px 0; border-bottom: 1px solid #c9c4b8; }
-    h2 { margin: 0 0 28px; font-family: Georgia, serif; font-size: 42px; letter-spacing: -.04em; }
-    .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
-    .card { min-height: 170px; padding: 24px; border-radius: 16px; background: #fffdf7; border: 1px solid #ddd7c9; }
-    .card:nth-child(2) { background: #dcebe4; }
-    .card:nth-child(3) { background: #f6df9d; }
-    .card h3 { margin: 0 0 12px; font-size: 22px; }
-    .card p { margin: 0; line-height: 1.45; }
-    footer { padding-top: 32px; color: #64706b; font-size: 14px; }
-    @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } .hero { min-height: 410px; } }
+    body { max-width: 820px; margin: 0 auto; padding: 48px 20px; background: white; color: #111; font: 16px/1.55 Arial, sans-serif; }
+    h1 { font-size: 42px; margin: 0 0 8px; }
+    h2 { font-size: 27px; margin: 44px 0 12px; border-bottom: 1px solid #ddd; padding-bottom: 8px; }
+    h3 { font-size: 19px; margin: 28px 0 6px; }
+    p { margin: 8px 0; }
+    ul { padding-left: 22px; }
+    li { margin: 7px 0; }
+    .subtitle { margin: 0; color: #444; }
+    .result { margin: 5px 0 13px; }
+    footer { margin-top: 48px; padding-top: 18px; border-top: 1px solid #ddd; color: #555; }
   </style>
 </head>
 <body>
-  <main>
-    <nav><strong>Ryan Su<span class="dot">.</span></strong><span>Toronto, Canada</span></nav>
-    <header class="hero">
-      <h1>Hi, I’m Ryan.</h1>
-      <p class="intro">A student who enjoys building things, running long distances, and arguing about ideas.</p>
-      <span class="tag">Personal site — work in progress</span>
-    </header>
-    <section>
-      <h2>What I do</h2>
-      <div class="grid">
-        <article class="card"><h3>Build</h3><p>I make small web projects, data visualizations, and games.</p></article>
-        <article class="card"><h3>Run</h3><p>I run cross country and keep chasing faster times.</p></article>
-        <article class="card"><h3>Debate</h3><p>I like politics, public speaking, and difficult questions.</p></article>
-        <article class="card"><h3>Explore</h3><p>This is where I’ll share projects, notes, and whatever I’m working on.</p></article>
-      </div>
-    </section>
-    <footer>© 2026 Ryan Su</footer>
-  </main>
+  <header>
+    <h1>Ryan Su</h1>
+    <p class="subtitle">Student · Runner · Debater · Musician</p>
+  </header>
+
+  <section>
+    <h2>Hobbies</h2>
+    <ul>
+      <li>Piano</li>
+      <li>Saxophone and jazz band</li>
+      <li>Gardening</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Cross Country</h2>
+    <p class="result"><a href="https://www.trackdatabase.com/viewmeet.php?current_meet=zzzz_db1752&amp;meet=enp6el9kYjE3NTI=&amp;Evt=638">Huron Heights Harrier XC</a> — 9th of 176 as a junior.</p>
+    <p class="result"><a href="https://www.trackdatabase.com/viewmeet.php?current_meet=zzzz_db1827&amp;meet=enp6el9kYjE4Mjc=&amp;Evt=4">CISAA</a> — 9th of 89.</p>
+    <p class="result"><a href="https://www.trackdatabase.com/viewmeet.php?current_meet=zzzz_db1749&amp;meet=enp6el9kYjE3NDk=&amp;Evt=682">OFSAA Provincials</a> — 132nd of 276.</p>
+  </section>
+
+  <section>
+    <h2>Debate</h2>
+    <h3>Leadership and initiatives</h3>
+    <ul>
+      <li>Co-tournament director of Argu-Mint Cup, a tournament with over 100 debaters.</li>
+      <li>Co-tournament director of the Speech and Debate Canada Invitational, with over 120 debaters from 16 countries and a $550 prize pool.</li>
+      <li>Secured a $300 sponsorship from the Speech and Debate Canada Foundation.</li>
+      <li>Started a coaching service connecting experienced high school debaters with new debaters, raising $120 for tournament fees.</li>
+      <li>Hosted a seminar featuring a Team Canada debate member.</li>
+      <li>Made outrounds at several tournaments and qualified for Junior Nationals CNDF.</li>
+    </ul>
+
+    <h3>Tournament results</h3>
+    <ul>
+      <li><a href="https://vwsdc2026.calicotab.com/vwsdc2026/">Vancouver WSDC</a> — Open Octofinals, 15th Open Team, 23rd U16 Speaker.</li>
+      <li><a href="https://qhst2026.calicotab.com/qhst2026/">Queens HST 2026</a> — Open Quarterfinals, 4th Open Team, 1st Junior Team, 4th Junior Speaker, 12th Open Speaker.</li>
+      <li><a href="https://hhwo26.calicotab.com/hhwo26/">Hart House Winter Open</a> — 9th Open Team Reserve Break, 2nd Junior Speaker, 19th Open Speaker.</li>
+      <li><a href="https://qho2025.calicotab.com/_/">Queens Holiday Open</a> — Open Partial Quarterfinalist, 10th Junior Speaker.</li>
+      <li><a href="https://qbs2025.calicotab.com/qbts2025/">Queens Back To School</a> — Open Grand Finalist, 2nd Junior Speaker.</li>
+      <li><a href="https://qhst2025.calicotab.com/QHST2025/">Queens HST 2025</a> — Junior Champion, 11th Junior Speaker.</li>
+      <li><a href="https://waterloohst.calicotab.com/uwspringhst2025/">Waterloo HST</a> — Open Quarterfinals, 18th Junior Speaker.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Other activities</h2>
+    <ul>
+      <li>Outreach Manager at the CYCS 2026 Leadership Summit.</li>
+      <li>Member of the UCC Sustainability Council.</li>
+      <li>Shortlisted for the John Locke Essay Competition junior pool, receiving a commendation. <a href="https://docs.google.com/document/d/1MCnwodJLQJXwShR193iVUNzWTWHSKNBJBhwnnqYi-rY/edit?usp=sharing">Read the essay</a>.</li>
+      <li>Political canvassing for Vincent Ke and Weidong Pei, trustee.</li>
+    </ul>
+  </section>
+
+  <footer>© 2026 Ryan Su</footer>
 </body>
 </html>
