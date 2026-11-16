@@ -377,23 +377,30 @@ try {
   }
 
 
-  // Sparse, short drops: a light drizzle rather than a rain curtain.
-  const drizzleCount=48;
-  const rainPositions=new Float32Array(drizzleCount*6);
-  const rainGeometry=new THREE.BufferGeometry();
-  rainGeometry.setAttribute('position',new THREE.BufferAttribute(rainPositions,3).setUsage(THREE.DynamicDrawUsage));
-  const rainMaterial=new THREE.LineBasicMaterial({color:0xe3f2f6,transparent:true,opacity:.36,depthWrite:false});
-  const drizzle=new THREE.LineSegments(rainGeometry,rainMaterial);
+  // Short mesh streaks retain visible thickness on high-density displays.
+  const drizzleCount=88;
+  const rainGeometry=new THREE.CylinderGeometry(.5,.28,1,5);
+  const rainMaterial=new THREE.MeshBasicMaterial({color:0xe9f8ff,transparent:true,opacity:.85,depthWrite:false});
+  const drizzle=new THREE.InstancedMesh(rainGeometry,rainMaterial,drizzleCount);
+  drizzle.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
   drizzle.frustumCulled=false;drizzle.renderOrder=4;scene.add(drizzle);
-  const splashGeometry=new THREE.RingGeometry(.92,1,24);
+  const dropTransform=new THREE.Object3D();
+  const splashGeometry=new THREE.RingGeometry(.82,1,40);
   const drizzleDrops=[];
   const rainHash=(n)=>{const value=Math.sin(n*127.1+311.7)*43758.5453;return value-Math.floor(value);};
   for(let i=0;i<drizzleCount;i++){
-    const splash=new THREE.Mesh(splashGeometry,new THREE.MeshBasicMaterial({
-      color:0xd9f0f4,transparent:true,opacity:0,side:THREE.DoubleSide,depthWrite:false
-    }));
-    splash.rotation.x=-Math.PI/2;splash.renderOrder=3;splash.visible=false;scene.add(splash);
-    drizzleDrops.push({splash,period:4.5+rainHash(i+4)*2,offset:rainHash(i+8)*7,height:7+rainHash(i+12)*3,speed:3.8+rainHash(i+17)});
+    const makeRing=()=>{
+      const ring=new THREE.Mesh(splashGeometry,new THREE.MeshBasicMaterial({
+        color:0xe5f8ff,transparent:true,opacity:0,side:THREE.DoubleSide,depthWrite:false
+      }));
+      ring.rotation.x=-Math.PI/2;ring.renderOrder=3;ring.visible=false;scene.add(ring);
+      return ring;
+    };
+    drizzleDrops.push({
+      splash:makeRing(),echo:makeRing(),
+      period:3.8+rainHash(i+4)*1.5,offset:rainHash(i+8)*6,
+      height:5.5+rainHash(i+12)*2.5,speed:3.4+rainHash(i+17)*.8
+    });
   }
 
   const raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();
@@ -507,33 +514,42 @@ try {
       ring.position.set(centre.x,.08+waveHeight(centre.x,centre.z,time),centre.z);
       ring.scale.setScalar(1+p*.3);ring.material.opacity=.18*(1-p);
     });
-    drizzleDrops.forEach(({splash,period,offset,height,speed},i)=>{
+    const rainPixelScale=2*Math.tan(THREE.MathUtils.degToRad(camera.fov)/2)/Math.max(host.clientHeight,1);
+    drizzleDrops.forEach(({splash,echo,period,offset,height,speed},i)=>{
       const elapsed=time+offset,cycle=Math.floor(elapsed/period),age=elapsed%period;
       const seed=i*19+cycle*61;
-      const x=(rainHash(seed+1)-.5)*30,z=(rainHash(seed+2)-.5)*30;
+      const x=(rainHash(seed+1)-.5)*20,z=(rainHash(seed+2)-.5)*20;
       const fallDuration=height/speed;
-      const vertex=i*6;
       if(age<fallDuration){
         const y=height-age*speed+waveHeight(x,z,time);
-        const lean=(fallDuration-age)*.12;
-        rainPositions[vertex]=x-lean;rainPositions[vertex+1]=y;rainPositions[vertex+2]=z;
-        rainPositions[vertex+3]=x-lean-.004;rainPositions[vertex+4]=y+.10+rainHash(i)*.05;rainPositions[vertex+5]=z;
+        const lean=(fallDuration-age)*.18;
+        dropTransform.position.set(x-lean,y,z);
+        const pixelSize=rainPixelScale*camera.position.distanceTo(dropTransform.position);
+        const width=THREE.MathUtils.clamp(pixelSize*1.8,.025,.065);
+        const length=THREE.MathUtils.clamp(pixelSize*(10+rainHash(i)*5),.20,.48);
+        dropTransform.scale.set(width,length,width);
+        dropTransform.rotation.set(0,0,.045);
+        // The lower tip meets the water at the same point that starts the rings.
+        dropTransform.position.y+=length*.5;
       }else{
-        // Collapse inactive segments to a point, with no visible streak.
-        rainPositions.fill(0,vertex,vertex+6);
+        dropTransform.position.set(x,-5,z);dropTransform.scale.set(0,0,0);
       }
+      dropTransform.updateMatrix();drizzle.setMatrixAt(i,dropTransform.matrix);
       const splashAge=age-fallDuration;
       const clearWater=!islands.some(({group})=>Math.hypot(group.position.x-x,group.position.z-z)<1.95)
         &&!lotusFlowers.some(({group})=>Math.hypot(group.position.x-x,group.position.z-z)<1.05);
-      splash.visible=splashAge>=0&&splashAge<.9&&clearWater;
-      if(splash.visible){
-        const progress=splashAge/.9;
-        splash.position.set(x,.035+waveHeight(x,z,time),z);
-        splash.scale.setScalar(.035+progress*.24);
-        splash.material.opacity=.22*Math.sin(progress*Math.PI)*(1-progress*.5);
-      }
+      [splash,echo].forEach((ring,j)=>{
+        const ringAge=splashAge-j*.22;
+        ring.visible=ringAge>=0&&ringAge<1.35&&clearWater;
+        if(ring.visible){
+          const progress=ringAge/1.35;
+          ring.position.set(x,.065+waveHeight(x,z,time)+j*.003,z);
+          ring.scale.setScalar(.07+progress*.49);
+          ring.material.opacity=(j?.38:.64)*Math.min(progress*9,1)*Math.pow(1-progress,1.15);
+        }
+      });
     });
-    rainGeometry.attributes.position.needsUpdate=true;
+    drizzle.instanceMatrix.needsUpdate=true;
     renderer.render(scene,camera);
   }
   renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();renderer.setAnimationLoop(null);skyVideoFailed=true;skyVideo.pause();window.pondFailed();});
